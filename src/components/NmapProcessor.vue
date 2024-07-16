@@ -86,8 +86,19 @@ const parseNmap = () => {
   nmapParsed.value = ''
 
   RawNmapOutput.value.split('\n').forEach(line => {
-    // Вывод строки если были данные, сброс памяти и/или запоминание новго IP
-    if (line.includes('Nmap scan report for ')) {
+    // Запоминание открытых портов
+    if (currentIP && line.includes('open')) {
+      checkForPorts.split(' ').forEach(port => {
+        // Доп. символы чтобы не было путаницы с 80/http и 8080/http и т.п.
+        if ((' ' + line).includes(' ' + port.toString() + '/')) {
+          portsFound += port + ', '
+          return
+        }
+      })
+    }
+
+    // Вывод строки если были данные, сброс памяти и запоминание новго IP
+    if (line.includes('Nmap scan report for ') || line.includes('Nmap done:')) {
       if (portsFound != '') {
         if (filterMode.value == 'and') {
           checkForPorts.split(' ').forEach(port => {
@@ -105,18 +116,10 @@ const parseNmap = () => {
         portsFound = ''
       }
       currentIP = line.substring(21)
-      return
-    }
 
-    // Запоминание открытых портов
-    if (currentIP && line.includes('open')) {
-      checkForPorts.split(' ').forEach(port => {
-        // Доп. символы чтобы не было путаницы с 80/http и 8080/http и т.п.
-        if ((' ' + line).includes(' ' + port.toString() + '/')) {
-          portsFound += port + ', '
-          return
-        }
-      })
+      console.log('here ' + currentIP)
+
+      return
     }
   });
 
