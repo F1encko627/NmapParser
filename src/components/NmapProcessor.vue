@@ -98,7 +98,7 @@ const parseNmap = () => {
     }
 
     // Вывод строки если были данные, сброс памяти и запоминание новго IP
-    if (line.includes('Nmap scan report for ') || line.includes('Nmap done:')) {
+    if (line.substring(0, 5).includes('Nmap ')) {
       if (portsFound != '') {
         if (filterMode.value == 'and') {
           checkForPorts.split(' ').forEach(port => {
