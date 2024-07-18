@@ -87,7 +87,7 @@ const parseNmap = () => {
 
   RawNmapOutput.value.split('\n').forEach(line => {
     // Запоминание открытых портов
-    if (currentIP && line.includes('open')) {
+    if (currentIP && line.toLowerCase().includes('open')) {
       checkForPorts.split(' ').forEach(port => {
         // Доп. символы чтобы не было путаницы с 80/http и 8080/http и т.п.
         if ((' ' + line).includes(' ' + port.toString() + '/')) {
@@ -115,11 +115,8 @@ const parseNmap = () => {
         foundAll = true
         portsFound = ''
       }
+
       currentIP = line.substring(21)
-
-      console.log('here ' + currentIP)
-
-      return
     }
   });
 
